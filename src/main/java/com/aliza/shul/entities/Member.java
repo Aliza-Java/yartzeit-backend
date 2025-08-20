@@ -2,6 +2,7 @@ package com.aliza.shul.entities;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +69,13 @@ public class Member {
 
 	private long mainMemberId;
 	
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	List<Yartzeit> yartzeits = new ArrayList<>();
+
+	LocalDateTime since = LocalDateTime.now();
+
+	public void addYartzeit(Yartzeit y) {
+		y.setMember(this);
+		yartzeits.add(y);
+	}
 }

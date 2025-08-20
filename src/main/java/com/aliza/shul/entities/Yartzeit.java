@@ -1,5 +1,6 @@
 package com.aliza.shul.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +22,19 @@ public class Yartzeit {
 	
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
+	@JsonIgnore
 	private Member member;
+
+	@Override
+	public String toString() {
+		return "Yartzeit{" +
+				"id=" + id +
+				"memberId: " + member.id +
+				", date=" + date +
+				", hName='" + hName + '\'' +
+				", relationship='" + relationship + '\'' +
+				'}';
+	}
 
 	@Embedded
 	private Hdate date;

@@ -5,7 +5,10 @@ import org.springframework.stereotype.Repository;
 
 import com.aliza.shul.entities.Member;
 
+import java.util.List;
+
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
+    List<Member> findByRelativeIdIsNull(); //finding main members
 
 }

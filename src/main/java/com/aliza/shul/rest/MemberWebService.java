@@ -1,8 +1,10 @@
 package com.aliza.shul.rest;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +39,12 @@ public class MemberWebService {
 	public boolean addMember(@RequestBody Member member) {
 		return memberService.addMember(member);
 	}
+
+//	@PostMapping
+//	public ResponseEntity<?> debug(@RequestBody Map<String, Object> payload) {
+//		System.out.println(payload);
+//		return ResponseEntity.ok().build();
+//	}
 
 	@PutMapping
 	public boolean updateMember(@RequestBody Member member) {

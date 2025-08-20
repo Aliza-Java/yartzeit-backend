@@ -13,9 +13,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 //@EnableEncryptableProperties
 @EnableScheduling
 @ServletComponentScan
-//@SpringBootApplication(scanBasePackages = "com.aliza.shul")
-//@EntityScan({"com.aliza.shul.entities", "com.aliza.shul.security"}) // <- this line ensures JPA picks up your entities
-//@EnableJpaRepositories("com.aliza.shul.repositories")
 public class ShulApplication {
 
 	public static void main(String[] args) {

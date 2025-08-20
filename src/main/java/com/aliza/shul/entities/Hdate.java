@@ -1,25 +1,31 @@
 package com.aliza.shul.entities;
 
 import jakarta.persistence.Embeddable;
+import lombok.*;
 
 import java.time.LocalDate;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 @Embeddable
 public class Hdate {
 
-	String day = "";
+	int day = -1;
 	String month = "";
 	LocalDate engDate;
 
 	public boolean isPartial() {
-		return (!(day.isEmpty() && month.isEmpty())   //not a situation where all are empty
-				&& (day.isEmpty() || month.isEmpty())); //but there is at least one empty
+		return (!(day == -1 && month.isEmpty())   //not a situation where all are empty
+				&& (day == -1 || month.isEmpty())); //but there is at least one empty
 	}
 	
 	public boolean isEmpty() {
-		return (day.isEmpty() && month.isEmpty());
+		return (day == -1 && month == null);
 	}
 
-	public boolean isNull() {return (day == null && month == null);}
+	public boolean isNull() {return (day == -1 && month == null);}
 
 }

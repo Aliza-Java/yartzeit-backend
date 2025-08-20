@@ -13,7 +13,12 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:4200") // @Value doesn't work here, loads too early
+                //.allowedOrigins("http://localhost:4200") // @Value doesn't work here, loads too early
+                .allowedOrigins(
+                        "http://localhost:4200",
+                        "https://d34rz30ymql87b.cloudfront.net",
+                        "https://www.elcmembers.online"
+                )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowCredentials(true);
     }

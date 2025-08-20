@@ -26,19 +26,18 @@ public class MemberService {
 	
 	public boolean addMember(Member member) {
 
-		memberChecks(member);
-
 		Member relative = member.getRelative();
 
 		if (relative != null) {
-			memberChecks(relative);
 			relative = memberRepository.save(relative);
+            member.setRelative(relative);
 		}
+
+		member.getYartzeits().forEach(y -> y.setMember(member));
 
 		Member mainMember = memberRepository.save(member);
 
 		if (relative != null) {
-
 			Member existingMember = memberRepository.findById(mainMember.getId()).orElseThrow();
 			relative.setMainMemberId(existingMember.getId());
 			memberRepository.save(relative);
@@ -54,15 +53,6 @@ public class MemberService {
 	}
 	
 	public List<Member> getAllMembers(){
-		return memberRepository.findAll();
+		return memberRepository.findByRelativeIdIsNull();
 	}
-
-	private void memberChecks(Member member) {
-		if (member.getAnniversary() == null || member.getAnniversary().isNull() || member.getAnniversary().isEmpty())
-			if (member.getSpouse() == null || member.getSpouse().isEmpty()) {
-				System.out.println("Spouse name cannot be empty.  Anniversary date deleted.");
-				member.setAnniversary(null);
-			}
-	}
-
 }
