@@ -5,7 +5,10 @@ import org.springframework.stereotype.Repository;
 
 import com.aliza.shul.entities.Yartzeit;
 
+import java.util.List;
+
 @Repository
 public interface YartzeitRepository extends JpaRepository<Yartzeit, Long> {
-    // Optional: custom query methods like findByEmail, etc.
+    List<Yartzeit> findAllByMemberId(long id);
+    List<Yartzeit> deleteAllByMemberId(long id);
 }

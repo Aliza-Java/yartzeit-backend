@@ -1,5 +1,6 @@
 package com.aliza.shul.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -63,13 +64,13 @@ public class Member {
 	@Column(nullable = false)
 	Gender gender = Gender.MALE;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "relative_id")
 	Member relative; //second adult, e.g. wife or son
 
-	private long mainMemberId;
+	long mainMemberId;
 	
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	List<Yartzeit> yartzeits = new ArrayList<>();
 
 	LocalDateTime since = LocalDateTime.now();

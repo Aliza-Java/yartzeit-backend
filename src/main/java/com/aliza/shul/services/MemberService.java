@@ -3,6 +3,8 @@ package com.aliza.shul.services;
 import java.util.List;
 import java.util.Optional;
 
+import com.aliza.shul.entities.Yartzeit;
+import com.aliza.shul.repositories.YartzeitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,9 @@ public class MemberService {
 
 	@Autowired
 	MemberRepository memberRepository;
+
+	@Autowired
+	YartzeitRepository yartzeitRepository;
 
 	public Member getMember(Long id) throws Exception {
 		Optional<Member> optionalMember = memberRepository.findById(id);
@@ -47,12 +52,14 @@ public class MemberService {
 	}
 	
 	public boolean editMember(Member member) {
+		yartzeitRepository.deleteAllByMemberId(member.getId());
+
+		member.getYartzeits().forEach(y -> y.setMember(member));
 		memberRepository.save(member);
 		return true;
-
 	}
 	
 	public List<Member> getAllMembers(){
-		return memberRepository.findByRelativeIdIsNull();
-	}
+		return memberRepository.findByMainMemberIdLessThan(1L);
+	} //i.e. all 0's = not secondary members
 }

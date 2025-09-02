@@ -1,7 +1,6 @@
 package com.aliza.shul.rest;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,7 @@ import com.aliza.shul.entities.Member;
 import com.aliza.shul.services.MemberService;
 
 @RestController
-@RequestMapping("member")
+@RequestMapping("/member")
 @CrossOrigin(origins = ("${client.origin}"), allowCredentials = "true")
 public class MemberWebService {
 

@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    List<Member> findByRelativeIdIsNull(); //finding main members
+    List<Member> findByMainMemberIdLessThan(Long value); //finding main members
 
 }

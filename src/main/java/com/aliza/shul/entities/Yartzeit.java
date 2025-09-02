@@ -6,13 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 public class Yartzeit {
 	
@@ -25,19 +23,20 @@ public class Yartzeit {
 	@JsonIgnore
 	private Member member;
 
+	@Embedded
+	private Hdate date;
+	private String name;
+	private String relationship;
+
+
 	@Override
 	public String toString() {
 		return "Yartzeit{" +
 				"id=" + id +
-				"memberId: " + member.id +
+				"memberId: " + (member == null ? "null" : member.id) +
 				", date=" + date +
-				", hName='" + hName + '\'' +
+				", hebrew Name='" + name + '\'' +
 				", relationship='" + relationship + '\'' +
 				'}';
 	}
-
-	@Embedded
-	private Hdate date;
-	private String hName;
-	private String relationship;
 }
