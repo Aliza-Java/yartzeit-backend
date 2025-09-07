@@ -35,8 +35,11 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
                 "http://localhost:4200",                 // local dev
-                "https://d10mixcvmjtwf2.cloudfront.net",  // prod frontend
-                "https://www.elcmembers.online"
+                "https://d34rz30ymql87b.cloudfront.net",  // prod frontend cloudfront
+                "https://www.elcmembers.online",          //prod domain name - different versions
+                "https://www.elcmembers.online/",
+                "https://elcmembers.online",
+                "https://elcmembers.online/"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
