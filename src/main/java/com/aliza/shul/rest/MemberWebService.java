@@ -48,24 +48,26 @@ public class MemberWebService {
         return true;
     }
 
+
     @RequestMapping
     public List<Member> getAllMembers() {
         return memberService.getAllMembers();
     }
 
+
     @PostMapping("/generate")
-    public String generateLink(@RequestBody String email) {
-        return memberService.generateLink(email);
+    public String generateLink() {
+        return memberService.generateLink();
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<String> verifyCode(@RequestBody VerifyCode verifyCode, HttpServletRequest request) {
+    public ResponseEntity<String> verifyCode(@RequestBody VerifyCode verifyCode) {
         String code = verifyCode.getCode();
 
-        String email = memberService.verifyCode(code);
+        boolean result = memberService.verifyCode(code);
 
-        if (email != null && !email.isEmpty()) {
-            return ResponseEntity.ok(email);
+        if (result) {
+            return ResponseEntity.ok("Link is valid");
         } else {
             return ResponseEntity.badRequest().body("Invalid or expired link.");
         }
