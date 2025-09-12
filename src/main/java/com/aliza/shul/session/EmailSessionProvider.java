@@ -1,4 +1,7 @@
 package com.aliza.shul.session;
 
-public class EmailSessionProvider {
+import jakarta.mail.Session;
+
+public interface EmailSessionProvider {
+    Session getSession();
 }
