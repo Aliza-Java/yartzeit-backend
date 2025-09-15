@@ -2,87 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <style>
-        /* General reset */
-        body {
-          font-family: Arial, Helvetica, sans-serif;
-          font-size: 14px;
-          line-height: 1.5;
-          color: #333333;
-          margin: 0;
-          padding: 0;
-          background-color: #f7f7f7;
-        }
-
-        table {
-          border-collapse: collapse;
-          width: 100%;
-        }
-
-        a {
-          color: #1a73e8;
-          text-decoration: none;
-        }
-
-        .container {
-          max-width: 600px;
-          margin: 20px auto;
-          background-color: #ffffff;
-          border: 1px solid #dddddd;
-          border-radius: 6px;
-          padding: 20px;
-        }
-
-        .header {
-          font-size: 20px;
-          font-weight: bold;
-          color: #222222;
-          margin-bottom: 20px;
-        }
-
-        .content {
-          font-size: 14px;
-          color: #444444;
-          margin-bottom: 20px;
-        }
-
-        .button {
-          display: inline-block;
-          background-color: #1a73e8;
-          color: #ffffff !important;
-          padding: 10px 20px;
-          border-radius: 4px;
-          font-weight: bold;
-          text-align: center;
-        }
-
-        .footer {
-          font-size: 12px;
-          color: #888888;
-          text-align: center;
-          margin-top: 30px;
-        }
-    </style>
 </head>
-<body>
-<div class="container">
-    <div class="content">
-        <img src="cid:logoImage" alt="ELC Logo"/>
+<body style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; color: #333333; margin: 0; padding: 0; background-color: #f7f7f7;">
+<div style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border: 1px solid #dddddd; border-radius: 6px; padding: 20px;">
+    <div style="font-size: 14px; color: #444444; margin-bottom: 20px;">
+        <div style="width: 600px; max-width: 100%; margin: auto;">
+            <img src="cid:logoImage" alt="ELC Logo"
+                 style="max-width:100%; height:auto; display:block;" />
+        </div>
+
         <p>Dear <span th:text="${name}"></span>,</p>
+
         <p>This is a reminder that the Yahrtzeit of your dear <span th:text="${relationship}"></span>
             (<span th:text="${fullname}"></span>) falls on <span th:text="${date}"></span>.
         </p>
 
         <p>
             In order to perpetuate the memory of your loved one, we advise that a Yahrtzeit candle should be lit on the
-            evening
-            prior to the Yahrtzeit date, and Kaddish should be recited in Shul during the services on that date.
+            evening prior to the Yahrtzeit date, and Kaddish should be recited in Shul during the services on that date.
         </p>
 
         <p>
             For Kaddish to be said on your behalf, or to sponsor a class, day or week of learning, please click on the
-            link
-            below.
+            link below.
         </p>
 
         <p>
@@ -91,8 +33,7 @@
 
         <p>
             On behalf of the entire ELC community, we wish you a long life with much blessing, and in the merit of
-            charity and
-            positive deeds, may the soul of your late <span th:text="${relationship}"></span> be elevated and comforted.
+            charity and positive deeds, may the soul of your late <span th:text="${relationship}"></span> be elevated and comforted.
         </p>
 
         <p>
@@ -103,10 +44,38 @@
         <p>
             The Emek Learning Center
         </p>
-    </div>
 
-    <div class="footer">
-        <p>&copy; 2025 SpringIntoJava</p>
+        <div style="width: 100%; background-color: #DAEAD7; padding: 20px 0; text-align: center; font-family: Arial, sans-serif;">
+            <!-- Banner Text -->
+            <div style="font-size: 20px; font-weight: bold; color: #000000; margin-bottom: 20px;">
+                Yes, I’d like to sponsor a day of learning
+            </div>
+
+            <!-- Buttons Table -->
+            <table role="presentation" align="center" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse; width: auto;">
+                <tr>
+                    <!-- First Button -->
+                    <td align="center" style="padding-right: 10px;">
+                        <a th:href="${urlwhendonating}"
+                           style="background-color: #217239; color: #ffffff; text-decoration: none;
+                           padding: 12px 20px; display: inline-block; font-weight: bold;
+                           border-radius: 4px; font-family: Arial, sans-serif; font-size: 14px;">
+                            Please take me to the donation page
+                        </a>
+                    </td>
+
+                    <!-- Second Button -->
+                    <td align="center" style="padding-left: 10px;">
+                        <a th:href="${urlwhenrequestingcontact}"
+                           style="background-color: #217239; color: #ffffff; text-decoration: none;
+                           padding: 12px 20px; display: inline-block; font-weight: bold;
+                           border-radius: 4px; font-family: Arial, sans-serif; font-size: 14px;">
+                            Please contact me regarding donation options
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
 </body>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; color: #333333; margin: 0; padding: 0; background-color: #f7f7f7;">
+<div style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border: 1px solid #dddddd; border-radius: 6px; padding: 20px;">
+    <div style="font-size: 14px; color: #444444; margin-bottom: 20px;">
+        <div style="width: 600px; max-width: 100%; margin: auto;">
+            <img src="cid:logoImage" alt="ELC Logo"
+                 style="max-width:100%; height:auto; display:block;" />
+        </div>
+        <p>
+            Dear Admin,
+        </p>
+
+        <p>
+            <span th:text="${firstname}"></span>
+            <span th:text="${lastname}"></span>
+            has requested that you contact them about donation methods in honor of their
+            <span th:text="${relationship}"></span>'s yartzeit that is coming up
+            (on <span th:text="${day}"></span> <span th:text="${month}"></span>).
+        </p>
+
+        <p>
+            Here are their contact details:<br>
+            Email: <span th:text="${email}"></span><br>
+            Phone: <span th:text="${phone}"></span>
+        </p>
+
+        <p>
+            Thank you.
+        </p>
+    </div>
+</div>
+</body>
+</html>

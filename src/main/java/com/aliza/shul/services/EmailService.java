@@ -53,10 +53,24 @@ public class EmailService {
 
     @Value("${admin.2.email}")
     private String adminEmail2;
+//TODO - really both urls can be unified and attach different middle
+    @Value("${url.when.donating}")
+    private String urlWhenDonating;
 
+    @Value("${url.when.requesting.contact}")
+    private String urlWhenRequestingContact;
 
-    @Scheduled(cron = "0 0 9 ? * SUN-THU", zone = "Asia/Jerusalem")
+    private Map<String, List<Integer>> chagim = Map.of(
+            "Tishrei", List.of(1, 2, 10, 15, 22),
+            "Nissan", List.of(15, 21),
+            "Sivan", List.of(6)
+    );
+    @Scheduled(cron = "0 0 9 ? * SUN-FRI", zone = "Asia/Jerusalem")
     public void sendReminderYartzeits() {
+
+        //on Chagim don't run (days before will cover chagim also)
+
+
         List<Yartzeit> upcomingYts = findUpcomingYtz();
         for (Yartzeit y : upcomingYts) {
             //TODO - need validation that there is an email
@@ -68,16 +82,40 @@ public class EmailService {
         }
     }
 
-    public void letAdminKnow(Yartzeit yartzeit) {
+    public void notifyAdminThatDonated(Long yartzeitId) {
 
+        Optional<Yartzeit> optionalYartzeit = yartzeitRepository.findById(yartzeitId);
+        if (optionalYartzeit.isEmpty())
+            System.out.println("yartzeit with id " + yartzeitId + " not found"); //TODO send email, make here as error.
+        else {
         String subject = "Member proceeded to donate for yartzeit";
-        String htmlMessage =  buildEmailAdminNotification(yartzeit);
+        String htmlMessage = buildEmailAdminNotification(optionalYartzeit.get());
 
         MimeMessage mimeMessage = createMimeMessage(sessionProvider.getSession(), subject, htmlMessage, adminEmail1, null, null, null);
 
-        sendEmail(mimeMessage);//to admin, that he clicked
-        System.out.println("Admin notified");
+        sendEmail(mimeMessage);//to admin, that member clicked on donate
+        System.out.println(adminEmail1 + " notified");
+        }
     }
+
+    //TODO - unite with above method using enum (duplicate code)
+    public void notifyAdminToContact(Long yartzeitId) {
+
+        Optional<Yartzeit> optionalYartzeit = yartzeitRepository.findById(yartzeitId);
+        if (optionalYartzeit.isEmpty())
+            System.out.println("yartzeit with id " + yartzeitId + " not found"); //TODO send email, make here as error.
+        else {
+            String subject = "Please contact " + optionalYartzeit.get().getMember().getFirstName() + " for donation instructions";
+            String htmlMessage = buildEmailAdminPleaseContact(optionalYartzeit.get());
+
+            MimeMessage mimeMessage = createMimeMessage(sessionProvider.getSession(), subject, htmlMessage, adminEmail1, null, null, null);
+
+            sendEmail(mimeMessage);//to admin, that member clicked on donate
+            System.out.println(adminEmail1 + " notified to contact");
+        }
+    }
+
+
 
     public boolean sendEmail(MimeMessage message) {
         try {
@@ -121,7 +159,7 @@ public class EmailService {
         MimeMessage message = new MimeMessage(session);
         try {
             //message.setFrom(new InternetAddress("elcmembersonline@gmail.com", "ELC Members Online")); //*TODO in future - put this in env file
-            message.setFrom(new InternetAddress("davening.list@gmail.com", "ELC Members Online")); //TODO - get elcmembers email to work and replace
+            message.setFrom(new InternetAddress("elcmembersonline@gmail.com", "ELC Members Online")); //TODO - get elcmembers email to work and replace
             message.setRecipients(Message.RecipientType.TO, to);
             if (bccList != null) {
                 bccList.forEach(bcc -> {
@@ -176,6 +214,11 @@ public class EmailService {
         context.setVariable("relationship", y.getRelationship());
         context.setVariable("fullname", y.getName());
         context.setVariable("date", buildUpcomingDateString(y.getDate()));
+        String customUrlDonate = String.format(urlWhenDonating, y.getId()); //insert yartzeit id into url
+        context.setVariable("urlwhendonating", customUrlDonate);
+        String customUrlPleaseContact = String.format(urlWhenRequestingContact, y.getId()); //insert yartzeit id into url
+        context.setVariable("urlwhenrequestingcontact", customUrlPleaseContact);
+
 
         return templateEngine.process("email-before-yt", context);
     }
@@ -189,43 +232,74 @@ public class EmailService {
 
         return templateEngine.process("notify-admin-donation-clicked", context);
     }
+
+    private String buildEmailAdminPleaseContact(Yartzeit y){
+        Context context = new Context();
+
+        context.setVariable("firstname", y.getMember().getFirstName());
+        context.setVariable("lastname", y.getMember().getLastName());
+        context.setVariable("relationship", y.getRelationship());
+        context.setVariable("day", y.getDate().getDay());
+        context.setVariable("month", y.getDate().getMonth());
+        context.setVariable("email", y.getMember().getEmail());
+        context.setVariable("phone", y.getMember().getPhone());
+
+        return templateEngine.process("notify-admin-to-contact-member", context);
+    }
+
     private List<Yartzeit> findUpcomingYtz() {
 
         Map<Integer, Set<Integer>> upcomingDates = new HashMap<>();
         HebrewCalendar cal = new HebrewCalendar();
         boolean isLeapYear = cal.isLeapYear(cal.get(HebrewCalendar.YEAR)); //TODO - find alternative for deprecated isLeapYear(int)
 
-        System.out.println(cal.get(HebrewCalendar.YEAR));
+        //on chagim - don't send
+        int day = cal.get(HebrewCalendar.DATE);
+        int monthNum = cal.get(HebrewCalendar.MONTH);
+        String monthName = DateUtils.hebrewMonthToString(monthNum, isLeapYear);
 
+        if (chagim.containsKey(monthName) && chagim.get(monthName).contains(day)) {
+            return List.of(); //don't run method today
+        }
+        //TODO: need to test and check with edge cases (RH on thursday+friday)
         HebrewCalendar dayToSend = new HebrewCalendar(new ULocale("iw_IL")); //start with today
 
-        System.out.println(dayToSend);
-
         dayToSend.add(HebrewCalendar.DAY_OF_MONTH, daysAhead);
-        considerDate(upcomingDates, dayToSend);
-        System.out.println(upcomingDates);
+        considerDate(upcomingDates, dayToSend); //check if upcoming date (x days ahead) can be added
 
-        //find day of week - on thursday we need to get also next 2 dates
-        DayOfWeek dow = LocalDate.now().getDayOfWeek();
-        if (DayOfWeek.THURSDAY.equals(dow)) //take care of Friday and Shabbat
-        {
+        boolean sentTomorrow = false; //to avoid moving day forward ALSO for chag and ALSO for Friday
+
+        if("ELUL".equals(monthName) && day == 29) { //both days of RH
             dayToSend.add(HebrewCalendar.DAY_OF_MONTH, 1);
             considerDate(upcomingDates, dayToSend);
+            dayToSend.add(HebrewCalendar.DAY_OF_MONTH, 1);
+            considerDate(upcomingDates, dayToSend);
+            sentTomorrow = true;
+        }
+
+        else if (chagim.containsKey(monthName) && chagim.get(monthName).contains(day)) {
+            dayToSend.add(HebrewCalendar.DAY_OF_MONTH, 1);
+            considerDate(upcomingDates, dayToSend);
+            sentTomorrow = true;
+        }
+
+        //find day of week - //on Friday send also for Shabbat
+        DayOfWeek dow = LocalDate.now().getDayOfWeek();
+        if (DayOfWeek.FRIDAY.equals(dow) && !sentTomorrow)
+        {
             dayToSend.add(HebrewCalendar.DAY_OF_MONTH, 1);
             considerDate(upcomingDates, dayToSend);
         }
 
         int hebrewYear = dateUtils.getHebrewDate(LocalDate.now()).get(Calendar.YEAR);
-        System.out.println(hebrewYear);
 
         List<Yartzeit> allYartzeits = yartzeitRepository.findAll();
         List<Yartzeit> relevantYartzeits = allYartzeits.stream()
                 .filter(y -> {
                     //convert each yartzeit date to this year's dates, i.e. which day (and month) would we remember it?
-                    Integer monthNum = DateUtils.hebrewMonthToInt(y.getDate().getMonth(), isLeapYear);
-                    System.out.println(monthNum);
-                    return upcomingDates.containsKey(monthNum) &&
-                            upcomingDates.get(monthNum).contains(y.getDate().getDay());
+                    Integer monthNumber = DateUtils.hebrewMonthToInt(y.getDate().getMonth(), isLeapYear);
+                    return upcomingDates.containsKey(monthNumber) &&
+                            upcomingDates.get(monthNumber).contains(y.getDate().getDay());
                 })
                 .peek(y -> {
                     Hdate date = y.getDate();

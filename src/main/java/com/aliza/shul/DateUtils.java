@@ -59,6 +59,16 @@ public class DateUtils {
         return value;
     }
 
+    public static String hebrewMonthToString(int monthNum, boolean isLeapYear) {
+        Map<String, Integer> thisYearMonths = isLeapYear? LEAP_YEAR_MONTHS : REGULAR_YEAR_MONTHS;
+        return thisYearMonths.entrySet()
+                .stream()
+                .filter(e -> e.getValue() == monthNum)
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
+    }
+
     public LocalDate convertHebrewToEnglish(String month, int day, boolean isLeapYear, int hebrewYear) {
         //the year will be turning before yartzeit (yartzeit is in tishrei, and now is Elul)
         if ("Tishrei".equals(month) && hebrewMonthToInt("Elul", isLeapYear).equals(getHebrewDate(LocalDate.now()).get(Calendar.MONTH)))
