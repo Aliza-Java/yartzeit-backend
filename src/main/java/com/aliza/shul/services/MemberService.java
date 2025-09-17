@@ -6,14 +6,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.aliza.shul.entities.Yartzeit;
+import com.aliza.shul.entities.*;
 import com.aliza.shul.repositories.YartzeitRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import com.aliza.shul.entities.Member;
 
 import com.aliza.shul.repositories.MemberRepository;
 
@@ -30,14 +28,14 @@ public class MemberService {
     private String fullClient;
 
     public static final List<String> months = List.of(
- "Tishrei", "Cheshvan", "Kislev", "Tevet", "Sh'vat", "Adar 1", "Adar 2", "Adar", "Nisan", "Iyyar", "Sivan", "Tamuz", "Av", "Elul");
+            "Tishrei", "Cheshvan", "Kislev", "Tevet", "Sh'vat", "Adar 1", "Adar 2", "Adar", "Nisan", "Iyyar", "Sivan", "Tamuz", "Av", "Elul");
 
     public static final List<String> parashot = List.of(
- "בראשית", "נח", "לך לך", "וירא", "חיי שרה", "תולדות", "ויצא", "וישלח", "וישב", "מקץ", "ויגש", "ויחי",
- "שמות", "וארא", "בא", "בשלח", "יתרו", "משפטים", "תרומה", "תצוה", "כי תשא", "ויקהל", "פקודי", "ויקהל - פקודי",
- "ויקרא", "צו", "שמיני", "תזריע", "מצורע", "תזריע - מצורע", "אחרי מות", "קדושים", "אחרי מות - קדושים", "אמור", "בהר", "בחוקותי", "בהר - בחוקותי",
- "במדבר", "נשא", "בהעלותך", "שלח", "קורח", "חקת", "בלק", "פנחס", "מטות", "מסעי", "מטות - מסעי",
- "דברים", "ואתחנן", "עקב", "ראה", "שופטים", "כי תצא", "כי תבוא", "נצבים", "וילך", "נצבים - וילך", "האזינו", "וזאת הברכה");
+            "בראשית", "נח", "לך לך", "וירא", "חיי שרה", "תולדות", "ויצא", "וישלח", "וישב", "מקץ", "ויגש", "ויחי",
+            "שמות", "וארא", "בא", "בשלח", "יתרו", "משפטים", "תרומה", "תצוה", "כי תשא", "ויקהל", "פקודי", "ויקהל - פקודי",
+            "ויקרא", "צו", "שמיני", "תזריע", "מצורע", "תזריע - מצורע", "אחרי מות", "קדושים", "אחרי מות - קדושים", "אמור", "בהר", "בחוקותי", "בהר - בחוקותי",
+            "במדבר", "נשא", "בהעלותך", "שלח", "קורח", "חקת", "בלק", "פנחס", "מטות", "מסעי", "מטות - מסעי",
+            "דברים", "ואתחנן", "עקב", "ראה", "שופטים", "כי תצא", "כי תבוא", "נצבים", "וילך", "נצבים - וילך", "האזינו", "וזאת הברכה");
 
     public Member getMember(Long id) throws Exception {
         Optional<Member> optionalMember = memberRepository.findById(id);
@@ -52,7 +50,7 @@ public class MemberService {
         boolean originalHasRelative = false;
         Optional<Member> optionalMember = memberRepository.findById(member.getId());
         if (optionalMember.isPresent()) {
- originalHasRelative = optionalMember.get().getRelative() != null;
+            originalHasRelative = optionalMember.get().getRelative() != null;
         }
 
         System.out.println("So far member is: " + member);
@@ -61,20 +59,20 @@ public class MemberService {
         Member relative = member.getRelative();
 
         if (relative != null) {
- System.out.println("relative is: " + relative);
- relative = memberRepository.save(relative);
- member.setRelative(relative); //two-way relationship - first side of member-relative relationship
+            System.out.println("relative is: " + relative);
+            relative = memberRepository.save(relative);
+            member.setRelative(relative); //two-way relationship - first side of member-relative relationship
         }
 
         if (!newMember) {
- yartzeitRepository.deleteAllByMemberId(member.getId()); //if any chance that editing yartzeits, start fresh
- System.out.println("deleted existing yartzeits for member with id " + member.getId());
+            yartzeitRepository.deleteAllByMemberId(member.getId()); //if any chance that editing yartzeits, start fresh
+            System.out.println("deleted existing yartzeits for member with id " + member.getId());
         }
 
         //this will only happen in edited member
         member.getYartzeits().forEach(y -> {
- y.setMember(member); //oneToMany so only need to save on yartzeit's side
- y.setId(null);// if id exists from earlier, look like new so that all persisted
+            y.setMember(member); //oneToMany so only need to save on yartzeit's side
+            y.setId(null);// if id exists from earlier, look like new so that all persisted
         });
 
         //now can save main member without worries of detached entities
@@ -85,10 +83,10 @@ public class MemberService {
         System.out.printf("relative is null? %s%n", relative == null);
         System.out.printf("original has relative? %s%n", originalHasRelative);
         if (relative != null && !originalHasRelative) {
- Member existingMember = newMember ? memberRepository.findById(mainMember.getId()).orElseThrow() : member;
- relative.setMainMemberId(existingMember.getId());
- memberRepository.save(relative);
- System.out.println("relative saved");
+            Member existingMember = newMember ? memberRepository.findById(mainMember.getId()).orElseThrow() : member;
+            relative.setMainMemberId(existingMember.getId());
+            memberRepository.save(relative);
+            System.out.println("relative saved");
         }
 
         return true;
@@ -108,7 +106,7 @@ public class MemberService {
 
         // Step 3: Encode to Base64 (URL-safe)
         String encoded = Base64.getUrlEncoder().withoutPadding()
-     .encodeToString(payload.getBytes(StandardCharsets.UTF_8));
+                .encodeToString(payload.getBytes(StandardCharsets.UTF_8));
 
         // Step 4: Build the full URL
         return fullClient + "/invite/" + encoded;
@@ -117,43 +115,46 @@ public class MemberService {
     public String verifyCode(String encoded) {
         String email = "";
         try {
- System.out.println(encoded);
- // Step 1: Base64 URL-safe decode
- byte[] decodedBytes = Base64.getUrlDecoder().decode(encoded);
- String payload = new String(decodedBytes, StandardCharsets.UTF_8);
+            System.out.println(encoded);
+            // Step 1: Base64 URL-safe decode
+            byte[] decodedBytes = Base64.getUrlDecoder().decode(encoded);
+            String payload = new String(decodedBytes, StandardCharsets.UTF_8);
 
- // Step 2: Split into email and expiry
- String[] parts = payload.split(":");
- if (parts.length != 2) {
-     throw new IllegalArgumentException("Invalid code format");
- }
+            // Step 2: Split into email and expiry
+            String[] parts = payload.split(":");
+            if (parts.length != 2) {
+                throw new IllegalArgumentException("Invalid code format");
+            }
 
- email = parts[0];
- long expiryEpoch = Long.parseLong(parts[1]);
+            email = parts[0];
+            long expiryEpoch = Long.parseLong(parts[1]);
 
- // Step 3: Convert expiry to Instant
- Instant expiry = Instant.ofEpochSecond(expiryEpoch);
+            // Step 3: Convert expiry to Instant
+            Instant expiry = Instant.ofEpochSecond(expiryEpoch);
 
- // Step 4: Check if expired
- if (Instant.now().isAfter(expiry)) {
-     System.out.println("Link expired");
- } else {
-     System.out.println("Email: " + email);
-     System.out.println("Expires at: " + expiry);
- }
+            // Step 4: Check if expired
+            if (Instant.now().isAfter(expiry)) {
+                System.out.println("Link expired");
+            } else {
+                System.out.println("Email: " + email);
+                System.out.println("Expires at: " + expiry);
+            }
         } catch (IllegalArgumentException e) {
- System.out.println("Invalid or malformed code");
+            System.out.println("Invalid or malformed code");
         }
         return email;
     }
 
-    public List<Yartzeit> getYearlyYartzeits() {
-        List<Yartzeit> allYartzeits = yartzeitRepository.findAll();//TODO: make a dto that returns name, relationship, month and day
-        return allYartzeits.stream().sorted(Comparator.comparingInt(y -> months.indexOf(y.getDate().getMonth()))).collect(Collectors.toList());
+    public List<YartzeitDto> getYearlyYartzeits() {
+        //TODO - make dto so that gets only member-id, first name, last name, parasha
+        List<YartzeitDto> allYartzeits = yartzeitRepository.findAllYartzeitDtos();
+        return allYartzeits.stream().sorted(Comparator
+                .comparingInt((YartzeitDto y) -> months.indexOf(y.getMonth()))
+                .thenComparingInt(y -> y.getDay())).collect(Collectors.toList());
     }
 
-    public List<Member> getMemberByBarMitzva() {
-        List<Member> membersWithParasha = memberRepository.findAllWithBmParasha();
+    public List<BmparashaDto> getMemberByBarMitzva() {
+        List<BmparashaDto> parashotOfMembers = memberRepository.findAllWithBmParasha();
 
         //because of the relatively large size, it's more efficient to map first as it uses a quicker algorithm.
         Map<String, Integer> parashaOrderMap = new HashMap<>();
@@ -161,10 +162,19 @@ public class MemberService {
             parashaOrderMap.put(parashot.get(i), i);
         }
 
-        List<Member> sortedMembers = membersWithParasha.stream()
-                .sorted(Comparator.comparingInt(m -> parashaOrderMap.get(m.getBmparasha())))
+        List<BmparashaDto> sortedParashotOfMembers = parashotOfMembers.stream()
+                .sorted(Comparator.comparingInt(p -> parashaOrderMap.get(p.getParasha())))
                 .collect(Collectors.toList());
 
-        return sortedMembers;
+        return sortedParashotOfMembers;
     }
+
+    public List<AnniversaryDto> getMembersAnniversaries() {
+        List<AnniversaryDto> membersWithAnn = memberRepository.findAllWithAnniversary();
+
+        return membersWithAnn.stream().sorted(Comparator
+                .comparingInt((AnniversaryDto m) -> months.indexOf(m.getMonth()))
+                .thenComparingInt(m -> m.getDay())).collect(Collectors.toList());
+    }
+
 }
