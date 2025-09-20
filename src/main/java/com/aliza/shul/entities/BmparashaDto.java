@@ -14,5 +14,7 @@ public class BmparashaDto {
     String lastName;
     String parasha;
     String hebName;
-    String fathersName;
+    String fatherName;
+
+
 }
