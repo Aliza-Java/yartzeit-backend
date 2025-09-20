@@ -243,4 +243,17 @@ public class MemberService {
                 .thenComparingInt(m -> m.getDay())).collect(Collectors.toList());
     }
 
+    public List<Yartzeit> deleteYartzeit(Long id) {
+        yartzeitRepository.deleteById(id);
+        return yartzeitRepository.findAll();
+    }
+
+    public List<Member> deleteMember(Long id) {
+        memberRepository.deleteById(id);
+        return memberRepository.findAll();
+    }
+
+    public List<Member> getAllRelatives(){
+        return memberRepository.findByMainMemberIdGreaterThan(0L);
+    }
 }
