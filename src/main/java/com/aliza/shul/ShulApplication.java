@@ -1,10 +1,8 @@
 package com.aliza.shul;
 
-import com.aliza.shul.services.EmailService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -33,8 +31,8 @@ public class ShulApplication {
 
 		// For testing - use below:
 
-		 EmailService emailService = context.getBean(EmailService.class);
-		emailService.sendReminderYartzeits();
+		 //EmailService emailService = context.getBean(EmailService.class);
+//		emailService.sendReminderYartzeits();
 
 
 

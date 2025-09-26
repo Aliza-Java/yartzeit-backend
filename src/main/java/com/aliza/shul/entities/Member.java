@@ -1,6 +1,5 @@
 package com.aliza.shul.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -58,7 +57,7 @@ public class Member {
 	})
 	Hdate aliya;
 	
-	String bmParasha;
+	String bmparasha;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
