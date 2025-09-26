@@ -11,6 +11,7 @@ import com.aliza.shul.repositories.YartzeitRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.aliza.shul.repositories.MemberRepository;
@@ -160,54 +161,46 @@ public class MemberService {
         return memberRepository.findByMainMemberIdLessThan(1L);
     } //i.e. all 0's = not secondary members
 
-    public String generateLink(String email) {
+
+    public String generateLink() {
         // Step 1: Compute expiry (72 hours from now)
         Instant expiry = Instant.now().plus(72, ChronoUnit.HOURS);
         long expiryEpoch = expiry.getEpochSecond(); // seconds since epoch
 
-        // Step 2: Build the payload string
-        String payload = email + ":" + expiryEpoch;
+        // Step 2: Encode to Base64 (URL-safe)
+        String encoded = Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(Long.toString(expiryEpoch).getBytes(StandardCharsets.UTF_8));
 
-        // Step 3: Encode to Base64 (URL-safe)
-        String encoded = Base64.getUrlEncoder().withoutPadding()
-                .encodeToString(payload.getBytes(StandardCharsets.UTF_8));
-
-        // Step 4: Build the full URL
+        // Step 3: Build the full URL
         return fullClient + "/invite/" + encoded;
     }
 
-    public String verifyCode(String encoded) {
-        String email = "";
+    public boolean verifyCode(String encoded) {
         try {
-            System.out.println(encoded);
             // Step 1: Base64 URL-safe decode
             byte[] decodedBytes = Base64.getUrlDecoder().decode(encoded);
             String payload = new String(decodedBytes, StandardCharsets.UTF_8);
 
-            // Step 2: Split into email and expiry
-            String[] parts = payload.split(":");
-            if (parts.length != 2) {
-                throw new IllegalArgumentException("Invalid code format");
-            }
+            long expiryEpoch = Long.parseLong(payload);
 
-            email = parts[0];
-            long expiryEpoch = Long.parseLong(parts[1]);
-
-            // Step 3: Convert expiry to Instant
+            // Step 2: Convert expiry to Instant
             Instant expiry = Instant.ofEpochSecond(expiryEpoch);
 
-            // Step 4: Check if expired
+            // Step 3: Check if expired
             if (Instant.now().isAfter(expiry)) {
                 System.out.println("Link expired");
+                return false;
             } else {
-                System.out.println("Email: " + email);
                 System.out.println("Expires at: " + expiry);
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid or malformed code");
+            return false;
         }
-        return email;
+        return true;
     }
+
 
     public List<YartzeitDto> getYearlyYartzeits() {
         //TODO - make dto so that gets only member-id, first name, last name, parasha
