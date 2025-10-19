@@ -112,22 +112,22 @@ public class MemberService {
     @Transactional
     public boolean saveMember(Member member, boolean newMember) {
         //get original member if in DB
-        boolean originalHasRelative = false;
-        Optional<Member> optionalMember = memberRepository.findById(member.getId());
-        if (optionalMember.isPresent()) {
-            originalHasRelative = optionalMember.get().getRelative() != null;
-        }
+       // boolean originalHasRelative = false;
+        //Optional<Member> optionalMember = memberRepository.findById(member.getId());
+//        if (optionalMember.isPresent()) {
+//            originalHasRelative = optionalMember.get().getRelative() != null;
+//        }
 
-        System.out.println("So far member is: " + member);
+        System.out.println("Incoming member is: " + member);
 
-        //first save relative and yartzeits (relationships)
-        Member relative = member.getRelative();
+//        //first save relative and yartzeits (relationships)
+//        Member relative = member.getRelative();
 
-        if (relative != null) {
-            System.out.println("relative is: " + relative);
-            relative = memberRepository.save(relative);
-            member.setRelative(relative); //two-way relationship - first side of member-relative relationship
-        }
+//        if (relative != null) {
+//            System.out.println("relative is: " + relative);
+//            relative = memberRepository.save(relative);
+//            member.setRelative(relative); //two-way relationship - first side of member-relative relationship
+//        }
 
         if (!newMember) {
             yartzeitRepository.deleteAllByMemberId(member.getId()); //if any chance that editing yartzeits, start fresh
@@ -141,24 +141,24 @@ public class MemberService {
         });
 
         //now can save main member without worries of detached entities
-        Member mainMember = memberRepository.save(member);
-        System.out.println("mainMember is: " + mainMember);
+        Member savedMember = memberRepository.save(member);
+        System.out.println("saved member is: " + savedMember);
 
-        //new member or new relative - update mainMember id in the relative and persist - second side of member-relative relationship
-        System.out.printf("relative is null? %s%n", relative == null);
-        System.out.printf("original has relative? %s%n", originalHasRelative);
-        if (relative != null && !originalHasRelative) {
-            Member existingMember = newMember ? memberRepository.findById(mainMember.getId()).orElseThrow() : member;
-            relative.setMainMemberId(existingMember.getId());
-            memberRepository.save(relative);
-            System.out.println("relative saved");
-        }
+//        //new member or new relative - update mainMember id in the relative and persist - second side of member-relative relationship
+//        System.out.printf("relative is null? %s%n", relative == null);
+//        System.out.printf("original has relative? %s%n", originalHasRelative);
+//        if (relative != null && !originalHasRelative) {
+//            Member existingMember = newMember ? memberRepository.findById(mainMember.getId()).orElseThrow() : member;
+//            relative.setMainMemberId(existingMember.getId());
+//            memberRepository.save(relative);
+//            System.out.println("relative saved");
+//        }
 
         return true;
     }
 
     public List<Member> getAllMembers() {
-        return memberRepository.findByMainMemberIdLessThan(1L);
+        return memberRepository.findAll();
     } //i.e. all 0's = not secondary members
 
 
@@ -246,7 +246,7 @@ public class MemberService {
         return memberRepository.findAll();
     }
 
-    public List<Member> getAllRelatives(){
-        return memberRepository.findByMainMemberIdGreaterThan(0L);
-    }
+//    public List<Member> getAllRelatives(){
+//        return memberRepository.findByMainMemberIdGreaterThan(0L);
+//    }
 }

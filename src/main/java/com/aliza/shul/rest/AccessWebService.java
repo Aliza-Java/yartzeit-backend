@@ -25,13 +25,13 @@ public class AccessWebService {
         return memberService.deleteMember(id);
     }
 
-    @GetMapping("relatives")
-    public List<Member> getAllRelatives() {
-        return memberService.getAllRelatives();
-    }
+//    @GetMapping("relatives")
+//    public List<Member> getAllRelatives() {
+//        return memberService.getAllRelatives();
+//    }
 
-    @GetMapping("main")
-    public List<Member> getAllMainMembers() {
+    @GetMapping("members")
+    public List<Member> getAllMembers() {
         return memberService.getAllMembers();
     }
 

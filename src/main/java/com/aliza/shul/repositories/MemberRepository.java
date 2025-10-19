@@ -12,9 +12,9 @@ import java.util.List;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    List<Member> findByMainMemberIdLessThan(Long value); //finding main members
-
-    List<Member> findByMainMemberIdGreaterThan(Long value); //finding relatives
+//    List<Member> findByMainMemberIdLessThan(Long value); //finding main members
+//
+//    List<Member> findByMainMemberIdGreaterThan(Long value); //finding relatives
 
     @Query("SELECT new com.aliza.shul.entities.BmparashaDto(m.firstName, m.lastName, m.bmparasha, m.hebrewName, m.fatherName) " +
             "FROM Member m WHERE m.bmparasha IS NOT NULL AND m.bmparasha <> ''")
