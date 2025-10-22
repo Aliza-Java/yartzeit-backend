@@ -31,12 +31,6 @@ public class Yartzeit {
 
 	@Override
 	public String toString() {
-		return "Yartzeit{" +
-				"id=" + id +
-				"memberId: " + (member == null ? "null" : member.id) +
-				", date=" + date +
-				", hebrew Name='" + name + '\'' +
-				", relationship='" + relationship + '\'' +
-				'}';
+		return STR."Yartzeit{id=\{id}memberId: \{member == null ? "null" : member.id}, date=\{date}, hebrew Name='\{name}', relationship='\{relationship}'}";
 	}
 }
