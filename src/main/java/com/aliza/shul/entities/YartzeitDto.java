@@ -16,4 +16,13 @@ public class YartzeitDto {
     int day;
     String month;
     String yname;
+    MemberType type;
+
+    public String getType() {
+        return type != null ? type.getFull() : null;
+    }
+
+    public void setType(MemberType type) {
+        this.type = type;
+    }
 }

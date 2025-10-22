@@ -14,7 +14,7 @@ public interface YartzeitRepository extends JpaRepository<Yartzeit, Long> {
     List<Yartzeit> findAllByMemberId(long id);
     List<Yartzeit> deleteAllByMemberId(long id);
 
-    @Query("SELECT new com.aliza.shul.entities.YartzeitDto(m.firstName, m.lastName, y.relationship, y.date.day, y.date.month, y.name) " +
+    @Query("SELECT new com.aliza.shul.entities.YartzeitDto(m.firstName, m.lastName, y.relationship, y.date.day, y.date.month, y.name, m.type) " +
             "FROM Yartzeit y " +
             "JOIN y.member m")
     List<YartzeitDto> findAllYartzeitDtos();

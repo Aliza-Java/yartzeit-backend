@@ -11,7 +11,6 @@ import com.aliza.shul.repositories.YartzeitRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.aliza.shul.repositories.MemberRepository;
@@ -79,7 +78,7 @@ public class MemberService {
             Map.entry("בהר - בחוקותי", "Behar-Bechukotai"),
             Map.entry("במדבר", "Bamidbar"),
             Map.entry("נשא", "Nasso"),
-            Map.entry("בהעלותך", "Behaalotecha"),
+            Map.entry("בהעלותך", "Behaalotcha"),
             Map.entry("שלח", "Shlach"),
             Map.entry("קורח", "Korach"),
             Map.entry("חקת", "Chukat"),
@@ -142,7 +141,7 @@ public class MemberService {
 
         //now can save main member without worries of detached entities
         Member savedMember = memberRepository.save(member);
-        System.out.println("saved member is: " + savedMember);
+        System.out.println(STR."saved member is: \{savedMember}");
 
 //        //new member or new relative - update mainMember id in the relative and persist - second side of member-relative relationship
 //        System.out.printf("relative is null? %s%n", relative == null);
@@ -157,9 +156,9 @@ public class MemberService {
         return true;
     }
 
-    public List<Member> getAllMembers() {
-        return memberRepository.findAll();
-    } //i.e. all 0's = not secondary members
+    public List<Member> getMembersByType(MemberType type) {
+        return memberRepository.findByType(type);
+    }
 
 
     public String generateLink() {
@@ -173,7 +172,7 @@ public class MemberService {
                 .encodeToString(Long.toString(expiryEpoch).getBytes(StandardCharsets.UTF_8));
 
         // Step 3: Build the full URL
-        return fullClient + "/invite/" + encoded;
+        return STR."\{fullClient}/invite/\{encoded}";
     }
 
     public boolean verifyCode(String encoded) {
@@ -192,7 +191,7 @@ public class MemberService {
                 System.out.println("Link expired");
                 return false;
             } else {
-                System.out.println("Expires at: " + expiry);
+                System.out.println(STR."Expires at: \{expiry}");
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid or malformed code");

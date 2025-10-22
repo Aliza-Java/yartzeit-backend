@@ -1,6 +1,7 @@
 package com.aliza.shul.rest;
 
 import com.aliza.shul.entities.Member;
+import com.aliza.shul.entities.MemberType;
 import com.aliza.shul.entities.Yartzeit;
 import com.aliza.shul.services.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,12 @@ public class AccessWebService {
 
     @GetMapping("members")
     public List<Member> getAllMembers() {
-        return memberService.getAllMembers();
+        return memberService.getMembersByType(MemberType.MEM);
+    }
+
+    @GetMapping("supporters")
+    public List<Member> getAllSupporters() {
+        return memberService.getMembersByType(MemberType.SUP);
     }
 
 }

@@ -2,6 +2,7 @@ package com.aliza.shul.repositories;
 
 import com.aliza.shul.entities.AnniversaryDto;
 import com.aliza.shul.entities.BmparashaDto;
+import com.aliza.shul.entities.MemberType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -22,4 +23,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("SELECT new com.aliza.shul.entities.AnniversaryDto(m.firstName, m.lastName, m.anniversary.day, m.anniversary.month, spouse) FROM Member m WHERE m.anniversary.day > 0 and m.anniversary.month is not null and m.anniversary.month <> ''")
     List<AnniversaryDto> findAllWithAnniversary();
+
+    List<Member> findByType(MemberType type);
 }

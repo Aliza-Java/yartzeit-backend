@@ -23,6 +23,10 @@ public class Member {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	long id;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	MemberType type = MemberType.MEM;
 	
 	String firstName;
 	String lastName;
