@@ -159,7 +159,7 @@ public class EmailService {
         MimeMessage message = new MimeMessage(session);
         try {
             //message.setFrom(new InternetAddress("elcmembersonline@gmail.com", "ELC Members Online")); //*TODO in future - put this in env file
-            message.setFrom(new InternetAddress("elcmembersonline@gmail.com", "ELC Members Online")); //TODO - get elcmembers email to work and replace
+            message.setFrom(new InternetAddress("elcmembersonline@gmail.com", "ELC Members Online"));
             message.setRecipients(Message.RecipientType.TO, to);
             if (bccList != null) {
                 bccList.forEach(bcc -> {

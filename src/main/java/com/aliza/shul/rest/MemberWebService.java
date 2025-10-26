@@ -71,6 +71,7 @@ public class MemberWebService {
         return memberService.getMembersByType(memberType);
     }
 
+    //currently not in use (user wants link static - not expirable
     @PostMapping("/generate")
     public String generateLink() {
         return memberService.generateLink();
