@@ -51,8 +51,6 @@ public class EmailService {
     @Value("${admin.1.email}")
     private String adminEmail1;
 
-    @Value("${admin.2.email}")
-    private String adminEmail2;
 //TODO - really both urls can be unified and attach different middle
     @Value("${url.when.donating}")
     private String urlWhenDonating;
