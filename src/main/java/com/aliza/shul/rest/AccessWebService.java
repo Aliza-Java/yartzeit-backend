@@ -3,6 +3,7 @@ package com.aliza.shul.rest;
 import com.aliza.shul.entities.Member;
 import com.aliza.shul.entities.MemberType;
 import com.aliza.shul.entities.Yartzeit;
+import com.aliza.shul.services.EmailService;
 import com.aliza.shul.services.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,9 @@ public class AccessWebService {
     @Autowired
     MemberService memberService;
 
+    @Autowired
+    EmailService emailService;
+
     @DeleteMapping("yartzeit/{id}")
     public List<Yartzeit> deleteYartzeitById(@PathVariable Long id) {
         return memberService.deleteYartzeit(id);
@@ -24,6 +28,11 @@ public class AccessWebService {
     @DeleteMapping("member/{id}")
     public List<Member> deleteMemberById(@PathVariable Long id) {
         return memberService.deleteMember(id);
+    }
+
+    @PostMapping("send-yz")
+    public void sendYartzeits() {
+         emailService.sendReminderYartzeits();
     }
 
 //    @GetMapping("relatives")
