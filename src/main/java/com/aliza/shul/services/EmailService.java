@@ -51,7 +51,7 @@ public class EmailService {
     @Value("${admin.1.email}")
     private String adminEmail1;
 
-//TODO - really both urls can be unified and attach different middle
+    //TODO - really both urls can be unified and attach different middle
     @Value("${url.when.donating}")
     private String urlWhenDonating;
 
@@ -63,6 +63,7 @@ public class EmailService {
             "Nissan", List.of(15, 21),
             "Sivan", List.of(6)
     );
+
     @Scheduled(cron = "0 0 9 ? * SUN-FRI", zone = "Asia/Jerusalem")
     public void sendReminderYartzeits() {
 
@@ -86,13 +87,13 @@ public class EmailService {
         if (optionalYartzeit.isEmpty())
             System.out.println("yartzeit with id " + yartzeitId + " not found"); //TODO send email, make here as error.
         else {
-        String subject = "Member proceeded to donate for yartzeit";
-        String htmlMessage = buildEmailAdminNotification(optionalYartzeit.get());
+            String subject = "Member proceeded to donate for yartzeit";
+            String htmlMessage = buildEmailAdminNotification(optionalYartzeit.get());
 
-        MimeMessage mimeMessage = createMimeMessage(sessionProvider.getSession(), subject, htmlMessage, adminEmail1, null, null, null);
+            MimeMessage mimeMessage = createMimeMessage(sessionProvider.getSession(), subject, htmlMessage, adminEmail1, null, null, null);
 
-        sendEmail(mimeMessage);//to admin, that member clicked on donate
-        System.out.println(adminEmail1 + " notified");
+            sendEmail(mimeMessage);//to admin, that member clicked on donate
+            System.out.println(adminEmail1 + " notified");
         }
     }
 
@@ -112,7 +113,6 @@ public class EmailService {
             System.out.println(adminEmail1 + " notified to contact");
         }
     }
-
 
 
     public boolean sendEmail(MimeMessage message) {
@@ -231,7 +231,7 @@ public class EmailService {
         return templateEngine.process("notify-admin-donation-clicked", context);
     }
 
-    private String buildEmailAdminPleaseContact(Yartzeit y){
+    private String buildEmailAdminPleaseContact(Yartzeit y) {
         Context context = new Context();
 
         context.setVariable("firstname", y.getMember().getFirstName());
@@ -253,7 +253,7 @@ public class EmailService {
 
         //on chagim - don't send
         int day = cal.get(HebrewCalendar.DATE);
-        int monthNum = cal.get(HebrewCalendar.MONTH);
+        int monthNum = (cal.get(HebrewCalendar.MONTH)) + 1;
         String monthName = DateUtils.hebrewMonthToString(monthNum, isLeapYear);
 
         if (chagim.containsKey(monthName) && chagim.get(monthName).contains(day)) {
@@ -267,15 +267,13 @@ public class EmailService {
 
         boolean sentTomorrow = false; //to avoid moving day forward ALSO for chag and ALSO for Friday
 
-        if("ELUL".equals(monthName) && day == 29) { //both days of RH
+        if ("ELUL".equals(monthName) && day == 29) { //both days of RH
             dayToSend.add(HebrewCalendar.DAY_OF_MONTH, 1);
             considerDate(upcomingDates, dayToSend);
             dayToSend.add(HebrewCalendar.DAY_OF_MONTH, 1);
             considerDate(upcomingDates, dayToSend);
             sentTomorrow = true;
-        }
-
-        else if (chagim.containsKey(monthName) && chagim.get(monthName).contains(day)) {
+        } else if (chagim.containsKey(monthName) && chagim.get(monthName).contains(day)) {
             dayToSend.add(HebrewCalendar.DAY_OF_MONTH, 1);
             considerDate(upcomingDates, dayToSend);
             sentTomorrow = true;
@@ -283,13 +281,13 @@ public class EmailService {
 
         //find day of week - //on Friday send also for Shabbat
         DayOfWeek dow = LocalDate.now().getDayOfWeek();
-        if (DayOfWeek.FRIDAY.equals(dow) && !sentTomorrow)
-        {
+        if (DayOfWeek.FRIDAY.equals(dow) && !sentTomorrow) {
             dayToSend.add(HebrewCalendar.DAY_OF_MONTH, 1);
             considerDate(upcomingDates, dayToSend);
         }
 
         int hebrewYear = dateUtils.getHebrewDate(LocalDate.now()).get(Calendar.YEAR);
+        System.out.println("upcomingDates: " + upcomingDates);
 
         List<Yartzeit> allYartzeits = yartzeitRepository.findAll();
         List<Yartzeit> relevantYartzeits = allYartzeits.stream()
@@ -304,17 +302,16 @@ public class EmailService {
                     date.setEngDate(dateUtils.convertHebrewToEnglish(y.getDate().getMonth(), y.getDate().getDay(), isLeapYear, hebrewYear));
                 })
                 .collect(Collectors.toList());
+        System.out.println(relevantYartzeits.size() + " relevant yartzeits were found");
+        relevantYartzeits.forEach(y -> System.out.println(y));
 
-        System.out.println(relevantYartzeits);
-        System.out.println(relevantYartzeits.get(0).getMember().getEmail());
-        System.out.println(relevantYartzeits.get(1).getMember().getEmail());
         return relevantYartzeits;
     }
 
     private void considerDate(Map<Integer, Set<Integer>> upcomingDates, HebrewCalendar dateToBe) {
 
         int day = dateToBe.get(HebrewCalendar.DATE);
-        int month = dateToBe.get(HebrewCalendar.MONTH); // 1-based
+        int month = dateToBe.get(HebrewCalendar.MONTH) + 1; // 0-based
 
         if (day != 30) //on 29th we do both 29 and 30
             upcomingDates

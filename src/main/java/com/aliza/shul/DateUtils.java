@@ -76,7 +76,7 @@ public class DateUtils {
             hebrewYear++;
 
         HebrewCalendar hebrewCal = new HebrewCalendar(ULocale.ROOT);
-        hebrewCal.set(hebrewYear, hebrewMonthToInt(month, isLeapYear), day); //put in Hebrew date
+        hebrewCal.set(hebrewYear, hebrewMonthToInt(month, isLeapYear)-1, day); //put in Hebrew date
         Date engDate = hebrewCal.getTime();                                  //and get English date
 
         return Instant.ofEpochMilli(engDate.getTime())
