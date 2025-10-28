@@ -28,9 +28,13 @@ public class Yartzeit {
 	private String name;
 	private String relationship;
 
-
 	@Override
 	public String toString() {
-		return STR."Yartzeit{id=\{id}memberId: \{member == null ? "null" : member.id}, date=\{date}, hebrew Name='\{name}', relationship='\{relationship}'}";
+		return "Yartzeit{" +
+				"id=" + id +
+				", date=" + date +
+				", name='" + name + '\'' +
+				", relationship='" + relationship + '\'' +
+				'}';
 	}
 }

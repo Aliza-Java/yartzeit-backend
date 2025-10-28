@@ -38,7 +38,7 @@ public class MemberWebService {
             memberType = MemberType.valueOf(type.toUpperCase());
             member.setType(memberType);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(STR."Invalid member type: \{type}");
+            throw new IllegalArgumentException("Invalid member type: " + type);
         }
 
         return memberService.saveMember(member, true);
@@ -52,7 +52,7 @@ public class MemberWebService {
             memberType = MemberType.valueOf(type.toUpperCase());
             member.setType(memberType);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(STR."Invalid member type: \{type}");
+            throw new IllegalArgumentException("Invalid member type: " + type);
         }
         memberService.saveMember(member, false);
         return true;
@@ -65,7 +65,7 @@ public class MemberWebService {
             // Convert case-insensitive path variable to enum
             memberType = MemberType.valueOf(type.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(STR."Invalid member type: \{type}");
+            throw new IllegalArgumentException("Invalid member type: " + type);
         }
 
         return memberService.getMembersByType(memberType);
