@@ -9,14 +9,15 @@ import com.ibm.icu.util.HebrewCalendar;
 import com.ibm.icu.util.ULocale;
 import jakarta.activation.DataHandler;
 import jakarta.activation.DataSource;
-import jakarta.activation.FileDataSource;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.util.ByteArrayDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -189,7 +190,8 @@ public class EmailService {
         multipart.addBodyPart(textPart);
 
         MimeBodyPart imagePart = new MimeBodyPart();
-        DataSource fds = new FileDataSource("src/main/resources/static/logo.jpeg"); // adjust path
+        ClassPathResource imageResource = new ClassPathResource("static/logo.jpeg"); //for deployment, can't hard-code path from src/
+        DataSource fds = new ByteArrayDataSource(imageResource.getInputStream(), "image/jpeg");
         imagePart.setDataHandler(new DataHandler(fds));
         imagePart.setHeader("Content-ID", "<logoImage>");   // match 'cid:logoImage'
         imagePart.setDisposition(MimeBodyPart.INLINE);
