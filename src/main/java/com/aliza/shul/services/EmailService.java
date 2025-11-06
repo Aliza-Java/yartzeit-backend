@@ -74,7 +74,7 @@ public class EmailService {
         List<Yartzeit> upcomingYts = findUpcomingYtz();
         for (Yartzeit y : upcomingYts) {
             //TODO - need validation that there is an email
-            String subject = "Subject for yartzeit donation";
+            String subject = String.format("The Yartzeit of your beloved %s is coming up", y.getRelationship());
             String htmlMessage = buildEmailReminderYartzeit(y);
             MimeMessage mimeMessage = createMimeMessage(sessionProvider.getSession(), subject, htmlMessage, y.getMember().getEmail(), null, null, null);
 
@@ -327,12 +327,26 @@ public class EmailService {
     }
 
     private String buildUpcomingDateString(Hdate date) {
-        //Sunday 27th July 2025 / 2nd Av  5785
+        //Sunday 27th July 2025 / 2nd Av 5785
         int hebrewYear = dateUtils.getHebrewDate(date.getEngDate()).get(Calendar.YEAR);
 
-        return date.getEngDate().getDayOfWeek() + " " +
+        return convertDayOfWeek(String.valueOf(date.getEngDate().getDayOfWeek())) + " " +
                 DateUtils.formatEnglishWithOrdinal(date.getEngDate()) +
                 " / " +
                 DateUtils.formatHebrewWithOrdinal(hebrewYear, date.getMonth(), date.getDay());
+    }
+
+    String convertDayOfWeek(String dayOfWeek) {
+        String cleanDay = "";
+        switch (dayOfWeek) {
+            case "SUNDAY" -> cleanDay = "Sunday";
+            case "MONDAY" -> cleanDay = "Monday";
+            case "TUESDAY" -> cleanDay = "Tuesday";
+            case "WEDNESDAY" -> cleanDay = "Wednesday";
+            case "THURSDAY" -> cleanDay = "Thursday";
+            case "FRIDAY" -> cleanDay = "Friday";
+            case "SATURDAY" -> cleanDay = "Shabbat";
+        }
+        return cleanDay;
     }
 }
