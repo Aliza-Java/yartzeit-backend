@@ -61,7 +61,7 @@ public class EmailService {
 
     private Map<String, List<Integer>> chagim = Map.of(
             "Tishrei", List.of(1, 2, 10, 15, 22),
-            "Nissan", List.of(15, 21),
+            "Nisan", List.of(15, 21),
             "Sivan", List.of(6)
     );
 

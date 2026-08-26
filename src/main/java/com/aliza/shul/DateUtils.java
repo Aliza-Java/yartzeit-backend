@@ -40,15 +40,13 @@ public class DateUtils {
             Map.entry("Kislev", 3),
             Map.entry("Tevet", 4),
             Map.entry("Sh'vat", 5),
-            Map.entry("Adar 1", 6),
-            Map.entry("Adar 2", 6),
             Map.entry("Adar", 6),
-            Map.entry("Nisan", 7),
-            Map.entry("Iyyar", 8),
-            Map.entry("Sivan", 9),
-            Map.entry("Tamuz", 10),
-            Map.entry("Av", 11),
-            Map.entry("Elul", 12)
+            Map.entry("Nisan", 8),
+            Map.entry("Iyyar", 9),
+            Map.entry("Sivan", 10),
+            Map.entry("Tamuz", 11),
+            Map.entry("Av", 12),
+            Map.entry("Elul", 13)
     );
 
     public static Integer hebrewMonthToInt(String month, boolean isLeapYear) {
